@@ -9,7 +9,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <Switch>
-          <Route exact={true} path="/Home" component={Home}></Route>
+          <Route exact={true} path="/" component={Home}></Route>
           <Route path="/another" component={AnotherScreen}></Route>
         </Switch>
       </header>
