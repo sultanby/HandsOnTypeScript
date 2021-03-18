@@ -9,7 +9,7 @@ class App extends React.Component {
     
     this.state = {
       enteredName: "",
-      message: ""
+      message: "no input given"
     }
 
     this.onChangeName = this.onChangeName.bind(this);
@@ -29,8 +29,7 @@ class App extends React.Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <input value={this.state.enteredName}
-            onChange={this.onChangeName} />
+          <input value={this.state.enteredName} onChange={this.onChangeName} />
           <Greeting message={this.state.message}/>
         </header>
       </div>
