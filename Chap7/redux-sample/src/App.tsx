@@ -5,6 +5,7 @@ import { USER_TYPE } from './store/UserReducer';
 import UserDisplay from './UserDisplay';
 import PostDisplay from "./PostDisplay";
 import { POST_TYPE } from './store/PostReducer';
+import ContextTester from './ContextTester';
 
 function App() {
   const [userid, setUserid] = useState(0);
@@ -77,6 +78,9 @@ function App() {
           <input value={postid} onChange={onChangePostId} />
         </div>
         <PostDisplay />
+      </div>
+      <div>
+      <ContextTester />
       </div>
     </React.Fragment>
   );

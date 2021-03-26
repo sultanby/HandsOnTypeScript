@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { AppState } from './store/AppState';
 import { useSelector } from 'react-redux';
 
 const UserDisplay = () => {
+    const renderCount = useRef(0);
+    console.log("renders UserDisplay", renderCount.current++);
     const user = useSelector((state: AppState) => state.user);
 
     if (user) {
