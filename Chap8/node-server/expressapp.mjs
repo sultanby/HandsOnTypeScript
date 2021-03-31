@@ -54,6 +54,10 @@ router.post("/api/v1/groups", (req, res, next) => {
     res.send(`Group ${group.groupname}`);
 });
 
+app.use((err, req, res, next) => {
+    res.status(500).send(err.message);
+});
+
 app.listen({ port: 8000 }, () => {
     console.log("Express Node server has loaded!");
 });
