@@ -2,6 +2,19 @@
   --min-screen-height: 1000px;
 }
 
+.modal-menu {
+  position: fixed;
+  min-width: 550px;
+  left: 50%;
+  top: 4.5em;
+  transform: translate(-50%);
+  border: var(--border);
+  border-radius: 5px;
+  background-color: white;
+  padding: 1em 1em 1em 1em;
+  z-index: 1000;
+}
+
 .App {
   margin: 0 auto;
   max-width: 1200px;
@@ -42,5 +55,12 @@
     grid-template-areas:
       "nav"
       "content";
+  }
+  .modal-menu {
+    min-width: 60px;
+    left: 0.5em;
+    right: 0.5em;
+    top: 3.5em;
+    transform: translate(0%);
   }
 }
