@@ -1,12 +1,11 @@
 import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import "./App.css";
-import LeftMenu from "./components/areas/LeftMenu";
-import Main from "./components/areas/main/Main";
-import Nav from "./components/areas/Nav";
-import RightMenu from "./components/areas/RightMenu";
-import SideBar from "./components/areas/sidebar/SideBar";
+import { Switch, Route } from "react-router-dom";
+import Home from "./components/routes/Home";
+import { useDispatch } from "react-redux";
 import { UserProfileSetType } from "./store/user/Reducer";
+import Thread from "./components/routes/thread/Thread";
+import UserProfile from "./components/routes/userProfile/UserProfile";
 
 function App() {
   const dispatch = useDispatch();
@@ -22,15 +21,17 @@ function App() {
     });
   }, [dispatch]);
 
+  const renderHome = (props: any) => <Home {...props} />;
+  const renderThread = (props: any) => <Thread {...props} />;
+  const renderUserProfile = (props: any) => <UserProfile {...props} />;
 
   return (
-    <div className="App">
-      <Nav></Nav>
-      <SideBar></SideBar>
-      <LeftMenu></LeftMenu>
-      <Main></Main>
-      <RightMenu></RightMenu>
-    </div>
+    <Switch>
+      <Route exact={true} path="/" render={renderHome} />
+      <Route path="/categorythreads/:categoryId" render={renderHome} />
+      <Route path="/thread/:id" render={renderThread}/>
+      <Route path="/userprofile/:id" render={renderUserProfile} />
+    </Switch>
   );
 }
 

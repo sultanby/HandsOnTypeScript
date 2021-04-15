@@ -9,7 +9,7 @@ export default class Thread {
     public body: string,
     public userName: string,
     public userId: string,
-    public points: number,
+    public points: number, //total number of likes
     public createdOn: Date,
     public lastModifiedOn: Date,
     public threadItems: Array<ThreadItem>,

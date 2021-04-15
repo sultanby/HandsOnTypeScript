@@ -1,4 +1,4 @@
-import { FC, useReducer, useState } from "react";
+import React, { FC, useReducer, useState } from "react";
 import ReactModal from "react-modal";
 import { isPasswordValid, PasswordTestResult } from "../../common/validators/PasswordValidator";
 import ModalProps from "../types/ModalProps";
