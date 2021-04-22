@@ -8,13 +8,6 @@ require("dotenv").config();
 const app = express();
 const router = express.Router();
 
-declare module 'express-session' {
-    export interface SessionData {
-      userid: any;
-      loadedCount: any;
-    }
-}
-
 const redis = new Redis({
     port: Number(process.env.REDIS_PORT),
     host: process.env.REDIS_HOST,
