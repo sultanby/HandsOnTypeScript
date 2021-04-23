@@ -19,6 +19,8 @@ const typeDefs = gql`
         lastModifiedBy: String!
         lastModifiedOn: Date!
     }
+    union UserResult = User | EntityResult
+
     type Thread {
         id: ID!
         views: Int!
@@ -34,6 +36,11 @@ const typeDefs = gql`
         lastModifiedOn: Date!
     }
     union ThreadResult = Thread | EntityResult
+    type ThreadArray {
+        threads: [Thread!]
+    }
+    union ThreadArrayResult = ThreadArray | EntityResult
+
     type ThreadItem {
         id: ID!
         views: Int!
@@ -46,6 +53,14 @@ const typeDefs = gql`
         lastModifiedBy: String!
         lastModifiedOn: Date!
     }
+    union ThreadItemResult = ThreadItem | EntityResult
+    
+    type ThreadItemArray {
+      threadItems: [ThreadItem!]
+    }
+    
+    union ThreadItemArrayResult = ThreadItemArray | EntityResult
+
     type ThreadCategory {
         id: ID!
         name: String!
@@ -56,7 +71,30 @@ const typeDefs = gql`
         lastModifiedBy: String!
         lastModifiedOn: Date!
     }
+
+    type CategoryThread {
+        threadId: ID!
+        categoryId: ID!
+        categoryName: String!
+        title: String!
+        titleCreatedOn: Date!
+    }
+
     type Query {
         getThreadById(id: ID!): ThreadResult
-    }`;
+        getThreadsByCategoryId(categoryId: ID!): ThreadArrayResult!
+        getThreadItemByThreadId(ThreadId: ID!): ThreadItemArrayResult!
+    }
+    
+    type Mutation {
+        createThread(
+            userId: ID!
+            categoryId: ID!
+            title: String!
+            body: String!
+        ): EntityResult
+    }
+
+    `;
+
 export default typeDefs;
