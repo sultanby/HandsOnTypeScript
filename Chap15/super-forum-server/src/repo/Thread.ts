@@ -41,4 +41,5 @@ export class Thread extends Auditable  {
     @ManyToOne(() => ThreadCategory, (threadCategory) =>
         threadCategory.threads)
     category: ThreadCategory;
+    points: number;
 }
