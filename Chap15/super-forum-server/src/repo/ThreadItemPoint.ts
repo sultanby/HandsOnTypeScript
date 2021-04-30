@@ -8,14 +8,10 @@ export class ThreadItemPoint extends Auditable  {
     @PrimaryGeneratedColumn({ name: "Id", type: "bigint" })
     // for typeorm
     id: string;
-    @Column("boolean", {
-        name: "IsDecrement", default: false,
-        nullable: false
-    })
+    @Column("boolean", { name: "IsDecrement", default: false, nullable: false})
     isDecrement: boolean;
     @ManyToOne(() => User, (user) => user.threadPoints)
     user: User;
-
     @ManyToOne(() => ThreadItem, (threadItem) =>threadItem.threadItemPoints)
     threadItem: ThreadItem;
 }

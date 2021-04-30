@@ -72,6 +72,27 @@ const typeDefs = gql`
         lastModifiedOn: Date!
     }
 
+    type ThreadPoint {
+        id: ID!
+        isDecrement: Boolean!
+        user: User!
+        thread: Thread!
+        createdBy: String!
+        createdOn: Date!
+        lastModifiedBy: String!
+        lastModifiedOn: Date!
+    }
+      type ThreadItemPoint {
+        id: ID!
+        isDecrement: Boolean!
+        user: User!
+        threadItem: ThreadItem!
+        createdBy: String!
+        createdOn: Date!
+        lastModifiedBy: String!
+        lastModifiedOn: Date!
+    }
+
     type CategoryThread {
         threadId: ID!
         categoryId: ID!
@@ -84,6 +105,7 @@ const typeDefs = gql`
         getThreadById(id: ID!): ThreadResult
         getThreadsByCategoryId(categoryId: ID!): ThreadArrayResult!
         getThreadItemByThreadId(ThreadId: ID!): ThreadItemArrayResult!
+        me: UserResult!
     }
     
     type Mutation {
@@ -98,6 +120,7 @@ const typeDefs = gql`
         login(userName: String!, password: String!): String!
         logout(userName: String!): String!
         updateThreadPoint(userId: ID!, threadId: ID!, increment: Boolean!): String!
+        updateThreadItemPoint(threadItemId: ID!, increment: Boolean!): String!
     }
 
     `;

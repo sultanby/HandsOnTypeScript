@@ -2,10 +2,12 @@ import { IResolvers } from "apollo-server-express";
 import { QueryArrayResult, QueryOneResult } from "../repo/QueryArrayResult";
 import { Thread } from "../repo/Thread";
 import { ThreadItem } from "../repo/ThreadItem";
+import { updateThreadItemPoint } from "../repo/ThreadItemPointRepo";
 import { createThreadItem, getThreadItemsByThreadId } from "../repo/ThreadItemRepo";
 import { updateThreadPoint } from "../repo/ThreadPointRepo";
 import { createThread, getThreadById, getThreadsByCategoryId } from "../repo/ThreadRepo";
-import { login, logout, register, UserResult } from "../repo/UserRepo";
+import { User } from "../repo/User";
+import { login, logout, me, register, UserResult } from "../repo/UserRepo";
 import { GqlContext } from "./GqlContext";
 
 const STANDARD_ERROR = "An error has occurred";
@@ -122,6 +124,30 @@ const resolvers: IResolvers = {
                 throw ex;
             }
         },
+        me: async (
+            obj: any,
+            args: null,
+            ctx: GqlContext,
+            info: any
+          ): Promise<User | EntityResult> => {
+            let user: UserResult;
+            try {
+              if (!ctx.req.session?.userId) {
+                return {
+                  messages: ["User not logged in."],
+                };
+              }
+              user = await me(ctx.req.session.userId);
+              if (user && user.user) {
+                return user.user;
+              }
+              return {
+                messages: user.messages ? user.messages : [STANDARD_ERROR],
+              };
+            } catch (ex) {
+              throw ex;
+            }
+        },
     },
     Mutation: {
         createThread: async (
@@ -176,6 +202,27 @@ const resolvers: IResolvers = {
                 result = await updateThreadPoint(
                     ctx.req.session!.userId,
                     args.threadId,
+                    args.increment
+                );
+                return result;
+            } catch (ex) {
+                throw ex;
+            }
+        },
+        updateThreadItemPoint: async (
+            obj: any,
+            args: { threadItemId: string; increment: boolean },
+            ctx: GqlContext,
+            info: any
+        ): Promise<string> => {
+            let result = "";
+            try {
+                if (!ctx.req.session || !ctx.req.session?.userId) {
+                    return "You must be logged in to set likes.";
+                }
+                result = await updateThreadItemPoint(
+                    ctx.req.session!.userId,
+                    args.threadItemId,
                     args.increment
                 );
                 return result;
