@@ -106,6 +106,8 @@ const typeDefs = gql`
         getThreadsByCategoryId(categoryId: ID!): ThreadArrayResult!
         getThreadItemByThreadId(ThreadId: ID!): ThreadItemArrayResult!
         me: UserResult!
+        getAllCategories: [ThreadCategory!]
+        getThreadsLatest: ThreadArrayResult!
     }
     
     type Mutation {

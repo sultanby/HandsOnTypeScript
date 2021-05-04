@@ -1,19 +1,23 @@
 import { IResolvers } from "apollo-server-express";
 import { QueryArrayResult, QueryOneResult } from "../repo/QueryArrayResult";
 import { Thread } from "../repo/Thread";
+import { ThreadCategory } from "../repo/ThreadCategory";
+import { getAllCategories } from "../repo/ThreadCategoryRepo";
 import { ThreadItem } from "../repo/ThreadItem";
 import { updateThreadItemPoint } from "../repo/ThreadItemPointRepo";
 import { createThreadItem, getThreadItemsByThreadId } from "../repo/ThreadItemRepo";
 import { updateThreadPoint } from "../repo/ThreadPointRepo";
-import { createThread, getThreadById, getThreadsByCategoryId } from "../repo/ThreadRepo";
+import { createThread, getThreadById, getThreadsByCategoryId, getThreadsLatest } from "../repo/ThreadRepo";
 import { User } from "../repo/User";
 import { login, logout, me, register, UserResult } from "../repo/UserRepo";
 import { GqlContext } from "./GqlContext";
 
 const STANDARD_ERROR = "An error has occurred";
+
 interface EntityResult {
     messages: Array<string>;
 }
+
 const resolvers: IResolvers = {
     UserResult: {
         __resolveType(obj: any, context: GqlContext, info: any) {
@@ -129,23 +133,63 @@ const resolvers: IResolvers = {
             args: null,
             ctx: GqlContext,
             info: any
-          ): Promise<User | EntityResult> => {
+        ): Promise<User | EntityResult> => {
             let user: UserResult;
             try {
-              if (!ctx.req.session?.userId) {
+                if (!ctx.req.session?.userId) {
+                    return {
+                        messages: ["User not logged in."],
+                    };
+                }
+                user = await me(ctx.req.session.userId);
+                if (user && user.user) {
+                    return user.user;
+                }
                 return {
-                  messages: ["User not logged in."],
+                    messages: user.messages ? user.messages : [STANDARD_ERROR],
                 };
-              }
-              user = await me(ctx.req.session.userId);
-              if (user && user.user) {
-                return user.user;
-              }
-              return {
-                messages: user.messages ? user.messages : [STANDARD_ERROR],
-              };
             } catch (ex) {
-              throw ex;
+                throw ex;
+            }
+        },
+        getAllCategories: async (
+            obj: any,
+            args: null,
+            ctx: GqlContext,
+            info: any
+        ): Promise<Array<ThreadCategory> | EntityResult> => {
+            let categories: QueryArrayResult<ThreadCategory>;
+            try {
+                categories = await getAllCategories();
+                if (categories.entities) {
+                    return categories.entities;
+                }
+                return {
+                    messages: categories.messages ? categories.messages : [STANDARD_ERROR],
+                };
+            } catch (ex) {
+                throw ex;
+            }
+        },
+        getThreadsLatest: async (
+            obj: any,
+            args: null,
+            ctx: GqlContext,
+            info: any
+        ): Promise<{ threads: Array<Thread> } | EntityResult> => {
+            let threads: QueryArrayResult<Thread>;
+            try {
+                threads = await getThreadsLatest();
+                if (threads.entities) {
+                    return {
+                        threads: threads.entities,
+                    };
+                }
+                return {
+                    messages: threads.messages ? threads.messages : [STANDARD_ERROR],
+                };
+            } catch (ex) {
+                throw ex;
             }
         },
     },

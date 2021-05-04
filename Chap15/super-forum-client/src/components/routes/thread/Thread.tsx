@@ -51,6 +51,7 @@ const Thread = () => {
             </div>
             <div className="thread-content-response-container">
                 <hr className="thread-section-divider" />
+                
                 <ThreadResponsesBuilder threadItems={thread?.threadItems} />
             </div>
         </div>

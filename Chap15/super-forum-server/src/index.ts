@@ -10,6 +10,7 @@ import { createThreadItem, getThreadItemsByThreadId } from "./repo/ThreadItemRep
 import { ApolloServer, makeExecutableSchema } from "apollo-server-express";
 import typeDefs from "./gql/typeDefs";
 import resolvers from "./gql/resolvers";
+import cors from "cors";
 
 require("dotenv").config();
 
@@ -22,6 +23,12 @@ declare module 'express-session' {
 
 const main = async () => {
     const app = express();
+    app.use(
+        cors({
+            credentials: true,
+            origin: process.env.CLIENT_URL,
+        })
+    );
     const router = express.Router();
 
     await createConnection();
@@ -184,7 +191,7 @@ const main = async () => {
         schema,
         context: ({ req, res }: any) => ({ req, res }),
     });
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: false });
 
     app.listen({ port: process.env.SERVER_PORT }, () => {
         console.log(`Server ready on port
