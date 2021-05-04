@@ -36,7 +36,7 @@ const Thread = () => {
                         lastModifiedOn={thread ? thread.lastModifiedOn : new Date()}
                         title={thread?.title}
                     />
-                    <ThreadCategory categoryName={thread?.category?.name} />
+                    <ThreadCategory category={thread?.category} sendOutSelectedCategory={(category) => {}}/>
                     <ThreadTitle title={thread?.title} />
                     <ThreadBody body={thread?.body} />
                 </div>

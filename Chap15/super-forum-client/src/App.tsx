@@ -6,8 +6,20 @@ import { useDispatch } from "react-redux";
 import { UserProfileSetType } from "./store/user/Reducer";
 import Thread from "./components/routes/thread/Thread";
 import UserProfile from "./components/routes/userProfile/UserProfile";
+import { gql, useQuery } from "@apollo/client";
+import { ThreadCategoriesType } from "./store/categories/Reducer";
+
+const GetAllCategories = gql`
+  query getAllCategories {
+    getAllCategories {
+      id
+      name
+    }
+  }
+`;
 
 function App() {
+  const { data } = useQuery(GetAllCategories);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -19,7 +31,13 @@ function App() {
         userName: "testUser",
       },
     });
-  }, [dispatch]);
+    if (data && data.getAllCategories) {
+      dispatch({
+      type: ThreadCategoriesType,
+      payload: data.getAllCategories,
+      });
+    }
+  }, [dispatch, data]);
 
   const renderHome = (props: any) => <Home {...props} />;
   const renderThread = (props: any) => <Thread {...props} />;
