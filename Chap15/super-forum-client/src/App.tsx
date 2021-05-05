@@ -3,11 +3,11 @@ import "./App.css";
 import { Switch, Route } from "react-router-dom";
 import Home from "./components/routes/Home";
 import { useDispatch } from "react-redux";
-import { UserProfileSetType } from "./store/user/Reducer";
 import Thread from "./components/routes/thread/Thread";
 import UserProfile from "./components/routes/userProfile/UserProfile";
 import { gql, useQuery } from "@apollo/client";
 import { ThreadCategoriesType } from "./store/categories/Reducer";
+import useRefreshReduxMe from "./hooks/useRefreshReduxMe";
 
 const GetAllCategories = gql`
   query getAllCategories {
@@ -19,25 +19,26 @@ const GetAllCategories = gql`
 `;
 
 function App() {
-  const { data } = useQuery(GetAllCategories);
+  const { data: categoriesData } = useQuery(GetAllCategories);
+  const { execMe, updateMe } = useRefreshReduxMe();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // todo: replace with GraphQL call
-    dispatch({
-      type: UserProfileSetType,
-      payload: {
-        id: 1,
-        userName: "testUser",
-      },
-    });
-    if (data && data.getAllCategories) {
+    execMe();
+  }, [execMe]);
+
+  useEffect(() => {
+    updateMe();
+  }, [updateMe]);
+
+  useEffect(() => {
+    if (categoriesData && categoriesData.getAllCategories) {
       dispatch({
-      type: ThreadCategoriesType,
-      payload: data.getAllCategories,
+        type: ThreadCategoriesType,
+        payload: categoriesData.getAllCategories,
       });
     }
-  }, [dispatch, data]);
+  }, [dispatch, categoriesData]);
 
   const renderHome = (props: any) => <Home {...props} />;
   const renderThread = (props: any) => <Thread {...props} />;
@@ -47,7 +48,7 @@ function App() {
     <Switch>
       <Route exact={true} path="/" render={renderHome} />
       <Route path="/categorythreads/:categoryId" render={renderHome} />
-      <Route path="/thread/:id" render={renderThread}/>
+      <Route path="/thread/:id" render={renderThread} />
       <Route path="/userprofile/:id" render={renderUserProfile} />
     </Switch>
   );

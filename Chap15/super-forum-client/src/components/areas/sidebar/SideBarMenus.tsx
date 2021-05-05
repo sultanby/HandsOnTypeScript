@@ -1,6 +1,6 @@
 import { faRegistered, faSignInAlt, faSignOutAlt, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../store/AppState";
 import Login from "../../auth/Login";
@@ -14,6 +14,10 @@ const SideBarMenus = () => {
     const [showLogin, setShowLogin] = useState(false);
     const [showLogout, setShowLogout] = useState(false);
     const user = useSelector((state: AppState) => state.user);
+
+    useEffect(() => {
+        console.log("SideBar user", user);
+      }, [user]);
 
     const onClickToggleRegister = (e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>) => {
         setShowRegister(!showRegister);
@@ -30,36 +34,47 @@ const SideBarMenus = () => {
     return (
         <React.Fragment>
             <ul>
-                <li>
-                    <FontAwesomeIcon icon={faUser} />
-                    <span className="menu-name">
-                        <Link to={`/userprofile/${user?.id}`}>{user?.userName}</Link>
-                    </span>
-                </li>
-                <li>
-                    <FontAwesomeIcon icon={faRegistered} />
-                    <Registration
-                        isOpen={showRegister}
-                        onClickToggle={onClickToggleRegister}
-                    />
-                    <span className="menu-name"
-                        onClick={onClickToggleRegister}
-                    >register</span>
-                </li>
-                <li>
-                    <FontAwesomeIcon icon={faSignInAlt} />
-                    <span onClick={onClickToggleLogin} className="menu-name">
-                        login
-                    </span>
-                    <Login isOpen={showLogin} onClickToggle={onClickToggleLogin} />
-                </li>
-                <li>
-                    <FontAwesomeIcon icon={faSignOutAlt} />
-                    <span onClick={onClickToggleLogout} className="menu-name">
-                        logout
-                    </span>
-                    <Logout isOpen={showLogout} onClickToggle={onClickToggleLogout} />
-                </li>
+                {user ? (
+                    <li>
+                        <FontAwesomeIcon icon={faUser} />
+                        <span className="menu-name">
+                            <Link to={`/userprofile/${user?.id}`}>{user?.userName}</Link>
+                        </span>
+                    </li>
+                ) : null}
+
+                {user ? null : (
+                    <li>
+                        <FontAwesomeIcon icon={faRegistered} />
+                        <span onClick={onClickToggleRegister} className="menu-name">
+                            register
+                        </span>
+                        <Registration
+                            isOpen={showRegister}
+                            onClickToggle={onClickToggleRegister}
+                        />
+                    </li>
+                )}
+
+                {user ? null : (
+                    <li>
+                        <FontAwesomeIcon icon={faSignInAlt} />
+                        <span onClick={onClickToggleLogin} className="menu-name">
+                            login
+                        </span>
+                        <Login isOpen={showLogin} onClickToggle={onClickToggleLogin} />
+                    </li>
+                )}
+
+                {user ? (
+                    <li>
+                        <FontAwesomeIcon icon={faSignOutAlt} />
+                        <span onClick={onClickToggleLogout} className="menu-name">
+                            logout
+                        </span>
+                        <Logout isOpen={showLogout} onClickToggle={onClickToggleLogout} />
+                    </li>
+                ) : null}
             </ul>
         </React.Fragment>
     );

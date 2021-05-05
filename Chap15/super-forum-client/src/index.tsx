@@ -8,12 +8,12 @@ import { Provider } from "react-redux";
 import configureStore from "./store/configureStore";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ReactModal from "react-modal";
-import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
+import { ApolloClient, ApolloProvider, HttpLink, InMemoryCache } from '@apollo/client';
 
 const client = new ApolloClient({
   uri: 'http://localhost:5051/graphql',
   credentials: "include",
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 });
 
 ReactDOM.render(

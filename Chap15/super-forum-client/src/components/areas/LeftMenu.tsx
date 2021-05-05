@@ -34,7 +34,7 @@ const LeftMenu = () => {
       }
     }
     
-  }, [data]);
+  }, [data, loading, error]);
   if (width <= 768) {
     return null;
   }
