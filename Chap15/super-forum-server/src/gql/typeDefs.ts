@@ -14,6 +14,7 @@ const typeDefs = gql`
         confirmed: Boolean!
         isDisabled: Boolean!
         threads: [Thread!]
+        threadItems: [ThreadItem!]
         createdBy: String!
         createdOn: Date!
         lastModifiedBy: String!
