@@ -33,9 +33,10 @@ const LIST_TYPES = ["numbered-list", "bulleted-list"];
 
 interface RichEditorProps {
     existingBody?: string;
+    readOnly?: boolean;
 }
 
-const RichEditor: FC<RichEditorProps> = ({ existingBody }) => {
+const RichEditor: FC<RichEditorProps> = ({ existingBody, readOnly = false }) => {
     const [value, setValue] = useState<Node[]>(initialValue);
     const renderElement = useCallback((props) => <Element {...props} />, []);
     const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
@@ -84,6 +85,7 @@ const RichEditor: FC<RichEditorProps> = ({ existingBody }) => {
                         }
                     }
                 }}
+                readOnly={readOnly}
             />
         </Slate>
     );

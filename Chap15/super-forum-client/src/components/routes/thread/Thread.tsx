@@ -10,19 +10,65 @@ import Nav from "../../areas/Nav";
 import ThreadBody from "./ThreadBody";
 import ThreadResponsesBuilder from "./ThreadResponsesBuilder";
 import ThreadPointsBar from "../../points/ThreadPointsBar";
+import { gql, useLazyQuery } from "@apollo/client";
+
+const GetThreadById = gql`
+    query GetThreadById($id: ID!) {
+        getThreadById(id: $id) {
+            ... on EntityResult {
+                messages
+            }
+        ... on Thread {
+                id
+                user {
+                    userName
+                }
+                lastModifiedOn
+                title
+                body
+                points
+                category {
+                    id
+                    name
+                }
+                threadItems {
+                    id
+                    body
+                    points
+                    user {
+                        userName
+                    }
+                }
+            }
+        }
+    }
+`;
 
 const Thread = () => {
+    const [execGetThreadById, { data: threadData }] = useLazyQuery(GetThreadById);
     const [thread, setThread] = useState<ThreadModel | undefined>();
     const { id } = useParams<{ id: string }>();
+    const [readOnly, setReadOnly] = useState(false);
 
     useEffect(() => {
         console.log("Thread id", id);
         if (id && id.length > 0) {
-            getThreadById(id).then((th) => {
-                setThread(th);
+            execGetThreadById({
+                variables: {
+                id,
+                },
             });
         }
-    }, [id]);
+    }, [id, execGetThreadById]);
+
+    useEffect(() => {
+        console.log("threadData", threadData);
+        if (threadData && threadData.getThreadById) {
+        setThread(threadData.getThreadById);
+        } else {
+        setThread(undefined);
+        }
+    }, [threadData]);
 
     return (
         <div className="screen-root-container">
@@ -32,13 +78,13 @@ const Thread = () => {
             <div className="thread-content-container">
                 <div className="thread-content-post-container">
                     <ThreadHeader
-                        userName={thread?.userName}
+                        userName={thread?.user.userName}
                         lastModifiedOn={thread ? thread.lastModifiedOn : new Date()}
                         title={thread?.title}
                     />
-                    <ThreadCategory category={thread?.category} sendOutSelectedCategory={(category) => {}}/>
+                    <ThreadCategory category={thread?.category}/>
                     <ThreadTitle title={thread?.title} />
-                    <ThreadBody body={thread?.body} />
+                    <ThreadBody body={thread?.body} readOnly={readOnly} />
                 </div>
                 <div className="thread-content-points-container">
                     <ThreadPointsBar
@@ -52,7 +98,7 @@ const Thread = () => {
             <div className="thread-content-response-container">
                 <hr className="thread-section-divider" />
                 
-                <ThreadResponsesBuilder threadItems={thread?.threadItems} />
+                <ThreadResponsesBuilder threadItems={thread?.threadItems} readOnly={readOnly} />
             </div>
         </div>
     );
