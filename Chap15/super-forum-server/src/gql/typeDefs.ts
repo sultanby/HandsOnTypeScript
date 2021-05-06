@@ -25,6 +25,7 @@ const typeDefs = gql`
     type Thread {
         id: ID!
         views: Int!
+        points: Int!
         isDisabled: Boolean!
         title: String!
         body: String!
@@ -45,6 +46,7 @@ const typeDefs = gql`
     type ThreadItem {
         id: ID!
         views: Int!
+        points: Int!
         isDisabled: Boolean!
         body: String!
         user: User!
@@ -112,20 +114,16 @@ const typeDefs = gql`
     }
     
     type Mutation {
-        createThread(
-            userId: ID!
-            categoryId: ID!
-            title: String!
-            body: String!
-        ): EntityResult
+        createThread( userId: ID! categoryId: ID! title: String! body: String! ): EntityResult
         createThreadItem(userId: ID!, threadId: ID!, body: String): EntityResult
         register(email: String!, userName: String!, password: String!): String!
         login(userName: String!, password: String!): String!
         logout(userName: String!): String!
         updateThreadPoint(userId: ID!, threadId: ID!, increment: Boolean!): String!
         updateThreadItemPoint(threadItemId: ID!, increment: Boolean!): String!
+        changePassword(newPassword: String!): String!
     }
 
-    `;
+`;
 
 export default typeDefs;

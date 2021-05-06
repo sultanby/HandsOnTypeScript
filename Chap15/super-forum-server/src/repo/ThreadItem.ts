@@ -12,6 +12,9 @@ export class ThreadItem extends Auditable {
     
     @Column("int", { name: "Views", default: 0, nullable: false })
     views: number;
+
+    @Column("int", { name: "Points", default: 0, nullable: false })
+    points: number;
     
     @Column("boolean", { name: "IsDisabled", default: false, nullable: false })
     isDisabled: boolean;
@@ -20,7 +23,7 @@ export class ThreadItem extends Auditable {
     @Length(10, 2500)
     body: string;
 
-    @ManyToOne(() => User, (user) => user.threads)
+    @ManyToOne(() => User, (user) => user.threadItems)
     user: User;
 
     @ManyToOne(() => Thread, (thread) => thread.threadItems)
@@ -28,5 +31,4 @@ export class ThreadItem extends Auditable {
 
     @OneToMany(() => ThreadItemPoint, (threadItemPoint) => threadItemPoint.threadItem)
     threadItemPoints: ThreadItemPoint[];
-    points: number;
 }
