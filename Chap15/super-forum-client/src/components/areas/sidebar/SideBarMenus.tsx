@@ -16,7 +16,6 @@ const SideBarMenus = () => {
     const user = useSelector((state: AppState) => state.user);
 
     useEffect(() => {
-        console.log("SideBar user", user);
       }, [user]);
 
     const onClickToggleRegister = (e: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element>) => {

@@ -44,7 +44,6 @@ const useRefreshReduxMe = (): UseRefreshReduxMeResult => {
         });
     };
     const updateMe = () => {
-        console.log("upd", data);
         if (data && data.me && data.me.userName) {
             reduxDispatcher({
                 type: UserProfileSetType,

@@ -5,7 +5,6 @@ import ThreadHeader from "./ThreadHeader";
 import ThreadCategory from "./ThreadCategory";
 import ThreadTitle from "./ThreadTitle";
 import ThreadModel from "../../../models/Thread";
-import { getThreadById } from "../../../services/DataService";
 import Nav from "../../areas/Nav";
 import ThreadBody from "./ThreadBody";
 import ThreadResponsesBuilder from "./ThreadResponsesBuilder";
@@ -18,9 +17,10 @@ const GetThreadById = gql`
             ... on EntityResult {
                 messages
             }
-        ... on Thread {
+            ... on Thread {
                 id
                 user {
+                    id
                     userName
                 }
                 lastModifiedOn
@@ -36,6 +36,7 @@ const GetThreadById = gql`
                     body
                     points
                     user {
+                        id
                         userName
                     }
                 }
@@ -45,17 +46,27 @@ const GetThreadById = gql`
 `;
 
 const Thread = () => {
-    const [execGetThreadById, { data: threadData }] = useLazyQuery(GetThreadById);
+    const [execGetThreadById, { data: threadData }] = useLazyQuery(GetThreadById, { fetchPolicy: "no-cache" });
     const [thread, setThread] = useState<ThreadModel | undefined>();
     const { id } = useParams<{ id: string }>();
     const [readOnly, setReadOnly] = useState(false);
+
+    const refreshThread = () => {
+        if (id && id.length > 0) {
+            execGetThreadById({
+                variables: {
+                    id,
+                },
+            });
+        }
+    };
 
     useEffect(() => {
         console.log("Thread id", id);
         if (id && id.length > 0) {
             execGetThreadById({
                 variables: {
-                id,
+                    id,
                 },
             });
         }
@@ -64,9 +75,11 @@ const Thread = () => {
     useEffect(() => {
         console.log("threadData", threadData);
         if (threadData && threadData.getThreadById) {
-        setThread(threadData.getThreadById);
+            setThread(threadData.getThreadById);
+            setReadOnly(true);
         } else {
-        setThread(undefined);
+            setThread(undefined);
+            setReadOnly(false);
         }
     }, [threadData]);
 
@@ -82,7 +95,7 @@ const Thread = () => {
                         lastModifiedOn={thread ? thread.lastModifiedOn : new Date()}
                         title={thread?.title}
                     />
-                    <ThreadCategory category={thread?.category}/>
+                    <ThreadCategory category={thread?.category} />
                     <ThreadTitle title={thread?.title} />
                     <ThreadBody body={thread?.body} readOnly={readOnly} />
                 </div>
@@ -92,12 +105,16 @@ const Thread = () => {
                         responseCount={
                             thread && thread.threadItems && thread.threadItems.length
                         }
+                        userId={thread?.user.id || "0"}
+                        threadId={thread?.id || "0"}
+                        allowUpdatePoints={true}
+                        refreshThread={refreshThread}
                     />
                 </div>
             </div>
             <div className="thread-content-response-container">
                 <hr className="thread-section-divider" />
-                
+
                 <ThreadResponsesBuilder threadItems={thread?.threadItems} readOnly={readOnly} />
             </div>
         </div>

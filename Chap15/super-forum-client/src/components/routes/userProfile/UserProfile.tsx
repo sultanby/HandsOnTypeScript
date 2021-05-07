@@ -5,7 +5,6 @@ import "./UserProfile.css";
 import Nav from "../../areas/Nav";
 import { useSelector } from "react-redux";
 import { AppState } from "../../../store/AppState";
-import { getUserThreads } from "../../../services/DataService";
 import Thread from "../../../models/Thread";
 import { Link } from "react-router-dom";
 import ThreadItem from "../../../models/ThreadItem";
