@@ -17,12 +17,7 @@ export const updateThreadItemPoint = async (
     where: { id: threadItemId },
     relations: ["user"],
   });
-  console.log(
-    "threadItemId, userId, threadItem!.user!.id",
-    threadItemId,
-    userId,
-    threadItem!.user!.id
-  );
+  
   if (threadItem!.user!.id === userId) {
     message = "Error: users cannot increment their own thread item";
     console.log("incThreadItemPoints", message);

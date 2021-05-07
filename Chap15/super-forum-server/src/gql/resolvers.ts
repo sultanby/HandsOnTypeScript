@@ -136,7 +136,6 @@ const resolvers: IResolvers = {
         ): Promise<User | EntityResult> => {
             let user: UserResult;
             try {
-                console.log("metest", ctx.req.session);
                 if (!ctx.req.session?.userId) {
                     return {
                         messages: ["User not logged in."],
@@ -235,7 +234,7 @@ const resolvers: IResolvers = {
         },
         updateThreadPoint: async (
             obj: any,
-            args: { threadId: string; increment: boolean },
+            args: {userId: string; threadId: string; increment: boolean },
             ctx: GqlContext,
             info: any
         ): Promise<string> => {

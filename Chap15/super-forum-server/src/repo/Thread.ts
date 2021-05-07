@@ -41,5 +41,7 @@ export class Thread extends Auditable  {
     @ManyToOne(() => ThreadCategory, (threadCategory) =>
         threadCategory.threads)
     category: ThreadCategory;
+
+    @Column("int", { name: "Points", default: 0, nullable: false })
     points: number;
 }
