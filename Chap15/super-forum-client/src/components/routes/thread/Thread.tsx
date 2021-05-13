@@ -10,6 +10,7 @@ import ThreadBody from "./ThreadBody";
 import ThreadResponsesBuilder from "./ThreadResponsesBuilder";
 import ThreadPointsBar from "../../points/ThreadPointsBar";
 import { gql, useLazyQuery } from "@apollo/client";
+import ThreadPointsInline from "../../points/ThreadPointsInline";
 
 const GetThreadById = gql`
     query GetThreadById($id: ID!) {
@@ -90,6 +91,12 @@ const Thread = () => {
             </div>
             <div className="thread-content-container">
                 <div className="thread-content-post-container">
+                    <ThreadPointsInline
+                        points={thread?.points || 0}
+                        threadId={thread?.id}
+                        refreshThread={refreshThread}
+                        allowUpdatePoints={true}
+                    />
                     <ThreadHeader
                         userName={thread?.user.userName}
                         lastModifiedOn={thread ? thread.lastModifiedOn : new Date()}
@@ -105,7 +112,6 @@ const Thread = () => {
                         responseCount={
                             thread && thread.threadItems && thread.threadItems.length
                         }
-                        userId={thread?.user.id || "0"}
                         threadId={thread?.id || "0"}
                         allowUpdatePoints={true}
                         refreshThread={refreshThread}
@@ -114,8 +120,11 @@ const Thread = () => {
             </div>
             <div className="thread-content-response-container">
                 <hr className="thread-section-divider" />
-
-                <ThreadResponsesBuilder threadItems={thread?.threadItems} readOnly={readOnly} />
+                <ThreadResponsesBuilder 
+                threadItems={thread?.threadItems} 
+                readOnly={readOnly} 
+                refreshThread={refreshThread}
+                />
             </div>
         </div>
     );
