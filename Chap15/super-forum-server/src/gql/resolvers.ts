@@ -234,7 +234,7 @@ const resolvers: IResolvers = {
         },
         updateThreadPoint: async (
             obj: any,
-            args: {userId: string; threadId: string; increment: boolean },
+            args: {threadId: string; increment: boolean },
             ctx: GqlContext,
             info: any
         ): Promise<string> => {
