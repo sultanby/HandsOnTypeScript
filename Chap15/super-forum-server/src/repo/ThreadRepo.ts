@@ -1,15 +1,19 @@
-import { isThreadBodyValid, isThreadTitleValid } from "../common/validators/ThreadValidators";
+import {
+    isThreadBodyValid,
+    isThreadTitleValid,
+} from "../common/validators/ThreadValidators";
 import { QueryArrayResult, QueryOneResult } from "./QueryArrayResult";
 import { Thread } from "./Thread";
 import { ThreadCategory } from "./ThreadCategory";
+import { ThreadItem } from "./ThreadItem";
 import { User } from "./User";
 
 export const createThread = async (
-    userId: string,
+    userId: string | undefined | null,
     categoryId: string,
     title: string,
     body: string
-): Promise<QueryArrayResult<Thread>> => {
+): Promise<QueryOneResult<Thread>> => {
     const titleMsg = isThreadTitleValid(title);
     if (titleMsg) {
         return {
@@ -22,15 +26,17 @@ export const createThread = async (
             messages: [bodyMsg],
         };
     }
+
     // users must be logged in to post
-    const user = await User.findOne({
-        id: userId,
-    });
-    if (!user) {
+    if (!userId) {
         return {
             messages: ["User not logged in."],
         };
     }
+    const user = await User.findOne({
+        id: userId,
+    });
+
     const category = await ThreadCategory.findOne({
         id: categoryId,
     });
@@ -50,8 +56,9 @@ export const createThread = async (
             messages: ["Failed to create thread."],
         };
     }
+
     return {
-        messages: ["Thread created successfully."],
+        messages: [thread.id],
     };
 };
 
@@ -62,17 +69,34 @@ export const getThreadById = async (
         where: {
             id,
         },
-        relations: ["user", "threadItems", "threadItems.user", "category"],
+        relations: [
+            "user",
+            "threadItems",
+            "threadItems.user",
+            "threadItems.thread",
+            "category",
+        ],
     });
     if (!thread) {
         return {
             messages: ["Thread not found."],
         };
     }
+
+    // extra sort
+    if (thread.threadItems) {
+        thread.threadItems.sort((a: ThreadItem, b: ThreadItem) => {
+            if (a.createdOn > b.createdOn) return -1;
+            if (a.createdOn < b.createdOn) return 1;
+            return 0;
+        });
+    }
+
     return {
         entity: thread,
     };
 };
+
 export const getThreadsByCategoryId = async (
     categoryId: string
 ): Promise<QueryArrayResult<Thread>> => {
@@ -83,6 +107,7 @@ export const getThreadsByCategoryId = async (
         .leftJoinAndSelect("thread.user", "user")
         .orderBy("thread.createdOn", "DESC")
         .getMany();
+
     if (!threads || threads.length === 0) {
         return {
             messages: ["Threads of category not found."],
@@ -102,6 +127,7 @@ export const getThreadsLatest = async (): Promise<QueryArrayResult<Thread>> => {
         .orderBy("thread.createdOn", "DESC")
         .take(10)
         .getMany();
+
     if (!threads || threads.length === 0) {
         return {
             messages: ["No threads found."],

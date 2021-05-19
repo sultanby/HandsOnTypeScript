@@ -111,6 +111,7 @@ const typeDefs = gql`
         me: UserResult!
         getAllCategories: [ThreadCategory!]
         getThreadsLatest: ThreadArrayResult!
+        getTopCategoryThread: [CategoryThread!]
     }
     
     type Mutation {
