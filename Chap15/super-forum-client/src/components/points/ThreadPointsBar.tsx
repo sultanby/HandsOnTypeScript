@@ -2,20 +2,7 @@ import React, { FC } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faReplyAll, faChevronDown, faChevronUp, } from "@fortawesome/free-solid-svg-icons";
 import { useWindowDimensions } from "../../hooks/useWindowDimensions";
-import { gql } from "@apollo/client";
 import useUpdateThreadPoint from "../../hooks/useUpdateThreadPoint";
-
-const UpdateThreadPoint = gql`
-    mutation UpdateThreadPoint(
-        $threadId: ID!
-        $increment: Boolean!
-        ){
-        updateThreadPoint(
-            threadId: $threadId
-            increment: $increment
-        )
-    }
-`;
 
 export class ThreadPointsBarProps {
     points: number = 0;
@@ -32,7 +19,6 @@ const ThreadPointsBar: FC<ThreadPointsBarProps> = ({
     threadId,
     allowUpdatePoints,
     refreshThread,
-    threadItemId,
 }) => {
     const { width } = useWindowDimensions();
     const { onClickDecThreadPoint, onClickIncThreadPoint } = useUpdateThreadPoint(refreshThread, threadId);

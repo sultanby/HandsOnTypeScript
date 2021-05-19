@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MainHeader from "./MainHeader";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import ThreadCard from "./ThreadCard";
 import Category from "../../../models/Category";
 import { gql, useLazyQuery } from "@apollo/client";
@@ -84,6 +84,7 @@ const Main = () => {
     const [threadCards, setThreadCards] = useState<Array<JSX.Element> | null>(
         null
     );
+    const history = useHistory();
 
     useEffect(() => {
         if (categoryId && categoryId.length > 0) {
@@ -95,9 +96,10 @@ const Main = () => {
         } else {
             execGetThreadsLatest();
         }
-    }, [categoryId, execGetThreadsByCat, execGetThreadsLatest]);
+    }, [categoryId]);
 
     useEffect(() => {
+        console.log("main threadsByCatData", threadsByCatData);
         if (
             threadsByCatData &&
             threadsByCatData.getThreadsByCategoryId &&
@@ -109,6 +111,9 @@ const Main = () => {
             });
             setCategory(threads[0].category);
             setThreadCards(cards);
+        } else {
+            setCategory(undefined);
+            setThreadCards(null);
         }
     }, [threadsByCatData]);
 
@@ -126,9 +131,15 @@ const Main = () => {
             setThreadCards(cards);
         }
     }, [threadsLatestData]);
+    const onClickPostThread = () => {
+        history.push("/thread");
+    };
 
     return (
         <main className="content">
+            <button className="action-btn" onClick={onClickPostThread}>
+                Post
+            </button>
             <MainHeader category={category} />
             <div>{threadCards}</div>
         </main>
